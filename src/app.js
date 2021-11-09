@@ -6,25 +6,40 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
+//env
+const { isProd } = require('./utils/env')
+
+//路由
 const index = require('./routes/index')
 const users = require('./routes/users')
+const errorViewRouter = require('./routes/view/error')
 
 // error handler
-onerror(app)
+let onerrorConf = {}
+if (isProd) {
+  onerrorConf = {
+    redict: '/error',
+  }
+}
+onerror(app, onerrorConf)
 
 // middlewares
-app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
-}))
+app.use(
+  bodyparser({
+    enableTypes: ['json', 'form', 'text'],
+  })
+)
 //json解析
 app.use(json())
 //使用日志
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
-  extension: 'ejs'
-}))
+app.use(
+  views(__dirname + '/views', {
+    extension: 'ejs',
+  })
+)
 
 // logger
 // app.use(async (ctx, next) => {
@@ -37,6 +52,7 @@ app.use(views(__dirname + '/views', {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(errorViewRouter.routes(), index.allowedMethods()) //404路由
 
 // error-handling
 app.on('error', (err, ctx) => {
