@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const router = Router()
 
-router.get('/', async (ctx, next) => {
+router.get('/', async (ctx) => {
   await ctx.render('index', {
     title: 'Hello Koa 2!',
     msg:'你好啊',
@@ -27,17 +27,17 @@ router.get('/', async (ctx, next) => {
   })
 })
 
-router.get('/string', async (ctx, next) => {
+router.get('/string', async (ctx) => {
   ctx.body = 'koa2 string'
 })
 
-router.get('/json', async (ctx, next) => {
+router.get('/json', async (ctx) => {
   ctx.body = {
     title: 'koa2 json'
   }
 })
 
-router.get('/load/:username',async (ctx,next)=>{
+router.get('/load/:username',async (ctx)=>{
   const {username} = ctx.params
   ctx.body = {
     title:'this is a username',
@@ -45,8 +45,8 @@ router.get('/load/:username',async (ctx,next)=>{
   }
 })
 
-router.post('/load',async (ctx,next)=>{
-  const {username,password} = ctx.request.body;
+router.post('/load',async (ctx)=>{
+  const {username,password} = ctx.request.body
   ctx.body = {
     username,
     password
