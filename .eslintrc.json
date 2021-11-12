@@ -22,7 +22,6 @@
             "error",
             "never"
         ],
-        "no-unused-vars":"off",
-        // "no-const-assign":"off"
+        "no-unused-vars":"off"
     }
 }
