@@ -31,11 +31,17 @@ router.get('/string', async (ctx) => {
   ctx.body = 'koa2 string'
 })
 
-router.get('/json', async (ctx) => {
-  // throw Error('错误了')
-
+router.get('/json', async (ctx, next) => {
+  const session = ctx.session
+  if (session.viewNum == null) {
+    session.viewNum = 0
+  }
+  session.viewNum++
+  console.log(session)
   ctx.body = {
     title: 'koa2 json',
+    viewNum: session.viewNum,
+    age: session.hyq,
   }
 })
 
