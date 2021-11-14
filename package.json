@@ -6,7 +6,7 @@
     "start": "node bin/www",
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon --inspect=9229 bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test jest --runInBand --forceExit --colors",
     "lint": "eslint --ext .js ./src"
   },
   "dependencies": {
@@ -26,7 +26,8 @@
     "koa-views": "^6.2.0",
     "mysql2": "^2.3.2",
     "redis": "^3.1.2",
-    "sequelize": "^6.7.0"
+    "sequelize": "^6.7.0",
+    "supertest": "^6.1.6"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
