@@ -19,6 +19,7 @@ const { isProd } = require('./utils/env')
 //路由
 const index = require('./routes/index')
 const users = require('./routes/users')
+const userViewRouter = require('./routes/view/user')
 const errorViewRouter = require('./routes/view/error')
 
 // error handler
@@ -31,13 +32,13 @@ if (isProd) {
 onerror(app, onerrorConf)
 
 //每次请求中间件都会进行验证token
-app.use(
-  jwtKoa({
-    secret: SECRET,
-  }).unless({
-    path: [/^\/users\/login$/], //自定义哪些目录忽略JWT验证
-  })
-)
+// app.use(
+//   jwtKoa({
+//     secret: SECRET,
+//   }).unless({
+//     path: [/^\/users\/login$/], //自定义哪些目录忽略JWT验证
+//   })
+// )
 
 // middlewares
 app.use(
@@ -86,7 +87,8 @@ app.use(
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
-app.use(errorViewRouter.routes(), index.allowedMethods()) //404路由
+app.use(userViewRouter.routes(), userViewRouter.allowedMethods())
+app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) //404路由
 
 // error-handling
 app.on('error', (err, ctx) => {
