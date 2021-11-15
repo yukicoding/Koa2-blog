@@ -22,6 +22,8 @@
             "error",
             "never"
         ],
-        "no-unused-vars":"off"
+        "no-unused-vars":"off",
+        "no-debugger":"off",
+        "no-console":"off"
     }
 }

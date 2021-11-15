@@ -5,9 +5,14 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const jwtKoa = require('koa-jwt')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const { REDIS_CONF } = require('./conf/db')
+
+//密匙
+const { SECRET } = require('./conf/constants')
+
 //env
 const { isProd } = require('./utils/env')
 
@@ -24,6 +29,15 @@ if (isProd) {
   }
 }
 onerror(app, onerrorConf)
+
+//每次请求中间件都会进行验证token
+app.use(
+  jwtKoa({
+    secret: SECRET,
+  }).unless({
+    path: [/^\/users\/login$/], //自定义哪些目录忽略JWT验证
+  })
+)
 
 // middlewares
 app.use(
@@ -42,7 +56,7 @@ app.use(
     extension: 'ejs',
   })
 )
-
+debugger
 //session 配置
 app.keys = ['UIsdf_7878#$']
 app.use(
