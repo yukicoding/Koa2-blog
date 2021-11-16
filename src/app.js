@@ -11,7 +11,7 @@ const redisStore = require('koa-redis')
 const { REDIS_CONF } = require('./conf/db')
 
 //密匙
-const { SECRET } = require('./conf/constants')
+const { SESSION_SECRET_KEY } = require('./conf/secretKeys')
 
 //env
 const { isProd } = require('./utils/env')
@@ -59,7 +59,7 @@ app.use(
 )
 debugger
 //session 配置
-app.keys = ['UIsdf_7878#$']
+app.keys = [SESSION_SECRET_KEY]
 app.use(
   session({
     key: 'weibo.sid', //session标识
