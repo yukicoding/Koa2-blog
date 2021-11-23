@@ -1,9 +1,8 @@
 const Router = require('koa-router')
 const router = Router()
+const { loginRedict, loginCheck } = require('../middlewares/loginChecks')
 
-router.get('/', async (ctx, next) => {
-  debugger
-  console.log('after debugger')
+router.get('/', loginRedict, async (ctx, next) => {
   await ctx.render('index', {
     title: 'Hello Koa 2!',
     msg: '你好啊',
@@ -33,7 +32,7 @@ router.get('/string', async (ctx) => {
   ctx.body = 'koa2 string'
 })
 
-router.get('/json', async (ctx, next) => {
+router.get('/json', loginCheck, async (ctx, next) => {
   const session = ctx.session
   if (session.viewNum == null) {
     session.viewNum = 0
