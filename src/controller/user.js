@@ -1,36 +1,78 @@
 /**
- * @description user controller
+
+
+ * @Date: 2020-12-17 14:19:03
+ * @LastEditTime: 2020-12-17 14:19:05
+
  */
 
-const { getUserInfo, createUser } = require('../services/user')
-//返回格式
+const { getUserInfo, createUser, deleteUser } = require('../services/user')
 const { SuccessModel, ErrorModel } = require('../model/ResModel')
-//信息错误格式
 const {
   registerUserNameNotExistInfo,
   registerUserNameExistInfo,
   registerFailInfo,
   loginFailInfo,
+  deleteUserFailInfo,
 } = require('../model/ErrorInfo')
-
 const { doCrypto } = require('../utils/cryp')
+/**
 
-//业务逻辑处理
-//调用services层获取数据
-//统一返回格式
+ * @param {String} userName 需要检查的用户名
+ * @description: 检查用户名是否存在
+ */
+async function isExist(userName) {
+  const userInfo = await getUserInfo(userName)
+  if (userInfo) {
+    // 已经存在
+    return new SuccessModel(userInfo)
+  } else {
+    // 不存在
+    return new ErrorModel(registerUserNameNotExistInfo)
+  }
+}
 
 /**
- *
- * @param {Object} ctx
- * @param {String} userName
- * @param {String} password
- * @returns
+
+ * @param {String} userName 用户名
+ * @param {String} password 密码
+ * @param {Number} gender 性别 1是男 2是女 3是保密
+ * @description: 注册功能
+ */
+async function register({ userName, password, gender }) {
+  const userInfo = await getUserInfo(userName)
+  if (userInfo) {
+    // 用户名已存在
+    return new ErrorModel(registerUserNameExistInfo)
+  }
+  // 注册功能
+  try {
+    createUser({
+      userName,
+      password: doCrypto(password),
+      gender,
+    })
+    return new SuccessModel()
+  } catch (e) {
+    console.error(e.message, e.stack)
+    return new ErrorModel(registerFailInfo)
+  }
+}
+
+/**
+
+ * @param {*} ctx koa2 ctx
+ * @param {*} userName 用户名
+ * @param {*} password 密码
+ * @description: 登录
  */
 async function login(ctx, userName, password) {
+  // 登录成功之后，将用户信息放到session中
   const userInfo = await getUserInfo(userName, doCrypto(password))
   if (!userInfo) {
     return new ErrorModel(loginFailInfo)
   }
+  // 登录成功
   if (ctx.session.userInfo == null) {
     ctx.session.userInfo = userInfo
   }
@@ -38,50 +80,31 @@ async function login(ctx, userName, password) {
 }
 
 /**
- *
- * @param {String} userName
- * @param {String} password
- * @param {Number} gender
+
+ * @param {string} userName
+ * @description: 删除用户
  */
-async function register({ userName, password, gender }) {
-  const userInfo = await getUserInfo(userName)
-  if (userInfo) {
-    return new ErrorModel(registerUserNameExistInfo)
+async function deleteCurUser(userName) {
+  const result = await deleteUser(userName)
+  if (result) {
+    return new SuccessModel()
   } else {
-    //service
-    try {
-      createUser({
-        userName,
-        password: doCrypto(password),
-        gender,
-      })
-      return new SuccessModel()
-    } catch (error) {
-      console.log(error.message, error.stack)
-      return new ErrorModel(registerFailInfo)
-    }
+    return new ErrorModel(deleteUserFailInfo)
   }
 }
 
 /**
- * 用户名是否存在
- * @param {String} userName  用户名
+
+ * @param {Object} ctx
+ * @description: 退出登录
  */
-
-async function isExist(userName) {
-  //call services
-  const userInfo = await getUserInfo(userName)
-  if (userInfo) {
-    //已存在
-    return new SuccessModel(userInfo)
-  } else {
-    return new ErrorModel(registerUserNameNotExistInfo)
-    //不存在
-  }
+async function logout(ctx) {
+  delete ctx.session.userInfo
+  return new SuccessModel()
 }
-
 module.exports = {
   isExist,
   register,
   login,
+  deleteCurUser,
 }

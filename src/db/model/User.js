@@ -39,5 +39,4 @@ const User = seq.define('user', {
     comment: '城市',
   },
 })
-
 module.exports = User

@@ -6,11 +6,28 @@ const router = require('koa-router')()
 //校验
 const userValidate = require('../../vaildator/user')
 const { genValidator } = require('../../middlewares/vaildator')
-console.log(typeof genValidator)
+const { isTest } = require('../../utils/env')
+const { loginCheck } = require('../../middlewares/loginChecks')
 //controller
-const { isExist, register, login } = require('../../controller/user')
+const {
+  isExist,
+  register,
+  login,
+  deleteCurUser,
+} = require('../../controller/user')
 
 router.prefix('/api/user')
+
+//删除路由
+router.post('/detele', loginCheck, async (ctx, next) => {
+  //测试环境下，测试账号登陆之后可以删除自己
+  if (isTest) {
+    const { userName } = ctx.session.userInfo
+    console.log(userName)
+    //调用controller
+    ctx.body = await deleteCurUser(userName)
+  }
+})
 
 //登录路由
 router.post('/login', async (ctx, next) => {
