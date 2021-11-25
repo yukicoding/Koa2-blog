@@ -1,7 +1,5 @@
 /**
- * @description:
-
-
+ * @description:user Service
  */
 
 const { User } = require('../db/model/index')
@@ -32,6 +30,7 @@ async function getUserInfo(userName, password) {
   }
   // 格式化
   const formatRes = formatUser(result.dataValues)
+  console.log(formatRes)
   return formatRes
 }
 

@@ -13,6 +13,7 @@ function _formatUserPicture(obj) {
   if (obj.picture === null) {
     obj.picture = DEFAULT_PICTURE
   }
+  console.log(obj)
   return obj
 }
 /**

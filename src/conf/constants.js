@@ -4,5 +4,6 @@
 
 module.exports = {
   SECRET: 'qxwtrSC*&12345',
-  DEFAULT_PICTURE: 'https://dwz/cn/rnTnftZs',
+  DEFAULT_PICTURE:
+    'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
 }
