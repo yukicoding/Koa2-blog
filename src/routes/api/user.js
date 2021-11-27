@@ -15,6 +15,8 @@ const {
   login,
   deleteCurUser,
   changeInfo,
+  changePassword,
+  logout,
 } = require('../../controller/user')
 
 router.prefix('/api/user')
@@ -53,13 +55,37 @@ router.post('/isExist', async (ctx, next) => {
 })
 
 //修改个人信息
-router.patch('/changeInfo', genValidator(userValidate), async (ctx, next) => {
-  console.log('in')
-  const { nickName, city, picture } = ctx.request.body
-  console.log(nickName, city, picture)
+router.patch(
+  '/changeInfo',
+  genValidator(userValidate),
+  loginCheck,
+  async (ctx, next) => {
+    console.log('in')
+    const { nickName, city, picture } = ctx.request.body
 
-  //调用controller
-  ctx.body = await changeInfo(ctx, { nickName, city, picture })
+    //调用controller
+    ctx.body = await changeInfo(ctx, { nickName, city, picture })
+  }
+)
+
+//修改密码
+router.patch(
+  '/changePassword',
+  genValidator(userValidate),
+  loginCheck,
+  async (ctx, next) => {
+    console.log('in')
+    const { password, newPassword } = ctx.request.body
+    const { userName } = ctx.session.userInfo
+    //调用controller
+    ctx.body = await changePassword(userName, password, newPassword)
+  }
+)
+
+//用户退出登录
+router.post('/logout', loginCheck, async (ctx, next) => {
+  //controller
+  ctx.body = await logout(ctx)
 })
 
 module.exports = router
