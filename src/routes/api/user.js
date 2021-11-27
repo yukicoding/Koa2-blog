@@ -14,6 +14,7 @@ const {
   register,
   login,
   deleteCurUser,
+  changeInfo,
 } = require('../../controller/user')
 
 router.prefix('/api/user')
@@ -23,7 +24,7 @@ router.post('/detele', loginCheck, async (ctx, next) => {
   //测试环境下，测试账号登陆之后可以删除自己
   if (isTest) {
     const { userName } = ctx.session.userInfo
-    console.log(userName)
+
     //调用controller
     ctx.body = await deleteCurUser(userName)
   }
@@ -51,6 +52,14 @@ router.post('/isExist', async (ctx, next) => {
   ctx.body = await isExist(userName)
 })
 
-//
+//修改个人信息
+router.patch('/changeInfo', genValidator(userValidate), async (ctx, next) => {
+  console.log('in')
+  const { nickName, city, picture } = ctx.request.body
+  console.log(nickName, city, picture)
+
+  //调用controller
+  ctx.body = await changeInfo(ctx, { nickName, city, picture })
+})
 
 module.exports = router

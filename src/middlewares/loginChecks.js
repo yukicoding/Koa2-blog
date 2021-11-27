@@ -27,7 +27,6 @@ async function loginCheck(ctx, next) {
  */
 async function loginRedict(ctx, next) {
   // console.log(ctx.session)
-  console.log(ctx.session)
   if (ctx.session && ctx.session.userInfo) {
     //已登录
     await next()
